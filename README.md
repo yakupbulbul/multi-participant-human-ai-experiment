@@ -6,6 +6,10 @@ I built it as a take-home assessment for the Center for Humans and Machines (MPI
 
 Stack: React (Vite, TypeScript), FastAPI, PostgreSQL 16, Docker Compose, nginx.
 
+![Animated walkthrough: config, waiting room, two chat rounds with votes, result, architecture, blind payloads](docs/how-it-works.gif)
+
+The animation is an illustration drawn with the app's design tokens, not a screen recording.
+
 ## Run it
 
 You need Docker with Compose.
@@ -144,4 +148,5 @@ backend/app/               FastAPI app
 backend/tests/             pytest suite
 frontend/src/              React app: useExperiment hook, screens/
 ai_logs/prompts.md         prompts, model and tool log
+docs/how-it-works.gif      animated walkthrough used at the top of this README
 ```

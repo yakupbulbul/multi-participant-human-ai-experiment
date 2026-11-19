@@ -412,3 +412,23 @@ They should not be in the explanations and prompts either.
 ````text
 Yes, push
 ````
+
+### Prompt 42 - create a GIF that explains the project
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Could you create a GIF that explains the project?
+
+you can add the readme
+````
+
+### Prompt 43 - go-ahead to push the GIF (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Yes, push
+````
