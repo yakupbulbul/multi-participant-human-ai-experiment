@@ -32,6 +32,7 @@ LABELS = ["Player A", "Player B", "Player C"]
 TOTAL_PLAYERS = 3
 START_COUNTDOWN_S = 3
 MAX_MESSAGE_LEN = 500
+MAX_MESSAGES_PER_ROUND = 30  # per participant, so one client cannot flood the chat and the database
 
 
 def _hash(token: str) -> str:
@@ -215,6 +216,9 @@ class SessionRunner:
         if not content or self.phase != "round":
             return
         round_no = self.round_no
+        sent = sum(1 for m in self.messages if m["round"] == round_no and m["sender"] == player.label)
+        if sent >= MAX_MESSAGES_PER_ROUND:
+            return
         async with db.SessionLocal.begin() as s:
             row = await repo.add_message(s, self.session_id, round_no, player.participant_id, content)
         self.messages.append(
