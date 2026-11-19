@@ -1,0 +1,11 @@
+# Test configuration: very short rounds, real timers (no fake clock).
+# The flow test overrides `participants` to cover all three conditions.
+participants: [human, ai, ai]
+rounds: 2
+round_seconds: 1
+vote_seconds: 2
+voting:
+  rule: sum
+ai:
+  mode: scripted
+  join_delay_s: [0, 0.2]
