@@ -34,14 +34,13 @@ VOTE_DELAY_S = (1.0, 6.0)
 
 
 def _compose(runner: "SessionRunner", me: "Player") -> str:
-    mine = {m["content"] for m in runner.messages if m["sender"] == me.label}
-    first_ever = not mine
-    options = [line for line in LINES if line not in mine]
-    greeted = any(m["content"] == OPENING for m in runner.messages)  # never two identical greetings
-    if first_ever and runner.round_no == 1 and not greeted and random.random() < 0.5:
+    first_ever = not any(m["sender"] == me.label for m in runner.messages)
+    said = {m["content"] for m in runner.messages}  # nobody repeats a line already in the chat
+    if first_ever and runner.round_no == 1 and OPENING not in said and random.random() < 0.5:
         return OPENING
-    peer = random.choice([label for label in runner.labels if label != me.label])
-    return random.choice(options or LINES).format(peer=peer)
+    peers = [label for label in runner.labels if label != me.label]
+    candidates = [line.format(peer=peer) for line in LINES for peer in peers]
+    return random.choice([c for c in candidates if c not in said] or candidates)
 
 
 def _choose(runner: "SessionRunner", me: "Player") -> str:
