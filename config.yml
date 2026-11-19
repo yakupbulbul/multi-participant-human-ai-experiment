@@ -1,0 +1,22 @@
+# Experiment configuration.
+# Edit this file, then apply it with:  docker compose restart backend
+# No code change and no rebuild needed.
+#
+# participants: exactly 3 entries, each "human" or "ai", at least one "human".
+#   3 humans:          [human, human, human]
+#   2 humans + 1 AI:   [human, human, ai]
+#   1 human + 2 AI:    [human, ai, ai]
+# The order is not shown to participants. Labels (Player A/B/C) are shuffled per session.
+participants: [human, ai, ai]
+
+rounds: 2            # fixed at 2 by the assessment
+round_seconds: 60    # length of each discussion round
+vote_seconds: 20     # length of each voting window
+disconnect_grace_s: 30   # a human gone longer than this aborts the session
+
+voting:
+  rule: sum          # sum = votes of both rounds count; last_round = round 2 decides
+
+ai:
+  mode: scripted           # scripted = fixed lines, no API key needed
+  join_delay_s: [2, 12]    # AI "joins" the waiting room after a random delay in this range
