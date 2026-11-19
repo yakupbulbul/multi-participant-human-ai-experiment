@@ -21,7 +21,7 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-experiment}:${POSTGRES_PASSWORD:-experiment}@db:5432/${POSTGRES_DB:-experiment}
       CONFIG_PATH: /app/config.yml
-      DEV_MODE: ${DEV_MODE:-1}
+      DEV_MODE: ${DEV_MODE:-0}
     volumes:
       - ./config.yml:/app/config.yml:ro
     depends_on:

@@ -119,7 +119,7 @@ Not automated: browser behaviour (I checked the screens by hand), disconnect and
 - There is no consent or debrief screen. A real study needs informed consent first and a debrief afterwards that discloses the AI participants.
 - One backend process and one live session. The schema is created on startup (no Alembic), and same-session checks live in the service layer rather than in composite foreign keys.
 - A long human disconnect aborts the session instead of handing the seat to an AI.
-- `DEV_MODE=1` is on by default in `docker-compose.yml` to make demos easy. It enables `POST /api/dev/reset`, which aborts the live session. Set `DEV_MODE=0` to remove the route.
+- `DEV_MODE` is off by default. Setting `DEV_MODE=1` (for example `DEV_MODE=1 docker compose up`) adds `POST /api/dev/reset`, which aborts the live session. It has no authentication, and any web page open in your browser could call it, so keep it off outside local testing.
 
 ## Cut for the 4-hour limit
 
