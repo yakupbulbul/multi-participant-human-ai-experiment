@@ -1,28 +1,30 @@
-# Multi-Participant Human-AI Experiment Platform
+# Multi-participant human/AI experiment platform
 
-A small web app that simulates a **3-participant group decision experiment**. Three participants chat in real time for two rounds, vote on who should be the **Decision Maker** after each round, and see the final result. Participants are never told whether the others are humans or AI agents.
+A small web app that simulates a group decision experiment with three participants. They chat for two rounds, vote for a Decision Maker after each round, and see the result at the end. Nobody is told whether the others are humans or AI agents.
 
-Built as a take-home assessment (Center for Humans and Machines, MPIB) within a 4-hour budget. The goal was a clean, working core flow rather than polish.
+I built it as a take-home assessment for the Center for Humans and Machines (MPIB) with a 4-hour budget. I aimed for a core flow that works end to end rather than polish.
 
-**Stack:** React (Vite, TypeScript) · FastAPI (Python) · PostgreSQL 16 · Docker Compose · nginx
+Stack: React (Vite, TypeScript), FastAPI, PostgreSQL 16, Docker Compose, nginx.
 
 ## Run it
 
-Requires Docker with Compose.
+You need Docker with Compose.
 
 ```bash
 docker compose up --build
 ```
 
-Open <http://localhost:3000>. No `.env` file is needed (defaults are in `docker-compose.yml`; see `.env.example` to override).
+Open <http://localhost:3000>. There is no `.env` to create; the defaults live in `docker-compose.yml`, and `.env.example` lists what you can override.
 
-Stop with `Ctrl+C`; `docker compose down -v` also removes the database volume.
+`Ctrl+C` stops it. `docker compose down -v` also deletes the database volume.
 
-**One browser tab = one participant.** The join token is kept in `sessionStorage`, so several tabs in the same browser are different participants. Open as many tabs as there are humans in the current configuration (see below). A reload keeps your place.
+One browser tab is one participant. The join token is kept in `sessionStorage`, so tabs in the same browser count as different people. Open as many tabs as there are humans in the current config (table below). Reloading a tab keeps your seat.
 
-## Switch the configuration (no code change)
+If you use Colima, clone the repo somewhere under your home folder. Colima only shares that folder with the VM, and outside it the `config.yml` bind mount ends up as an empty directory and the backend won't start.
 
-Edit `participants` in [`config.yml`](config.yml), then restart only the backend:
+## Switching the configuration
+
+Edit `participants` in [`config.yml`](config.yml) and restart the backend. No code change and no frontend rebuild.
 
 ```bash
 docker compose restart backend
@@ -34,98 +36,98 @@ docker compose restart backend
 | 2 humans + 1 AI | `[human, human, ai]` | 2 |
 | 1 human + 2 AI (default) | `[human, ai, ai]` | 1 |
 
-Other settings in the same file: `round_seconds` (60), `vote_seconds` (20), `voting.rule` (`sum` or `last_round`), `ai.join_delay_s` (range of the AI "arrival" delay), `disconnect_grace_s` (30). The file is validated at startup (exactly 3 entries, only `human`/`ai`, at least one human, unknown keys rejected), and the backend refuses to start on an invalid file.
+The same file has `round_seconds` (60), `vote_seconds` (20), `voting.rule` (`sum` or `last_round`), `ai.join_delay_s` (how long the AI "arrives" after the lobby opens) and `disconnect_grace_s` (30). It is validated on startup: exactly 3 entries, only `human` or `ai`, at least one human, no unknown keys. If it is invalid the backend refuses to start.
 
-To play a quick session for a demo, set `round_seconds: 10` and `vote_seconds: 10`.
+For a quick demo, set `round_seconds: 10` and `vote_seconds: 10`.
 
-## Experiment flow and the decisions I made
+## How the experiment works, and what I decided
 
-The brief left these open. My choices, each with the reason:
+The brief left several things open. These are my choices and the reason for each.
 
 | Topic | Choice | Why |
 |---|---|---|
-| Waiting room | Shows only "Waiting for participants (n/3)". AI participants "join" after a random delay through the same code path as humans. | No slot list or pre-filled slots that would reveal where the AI sit. |
-| Rounds | 2 rounds of chat (60 s), each followed by a vote (20 s). A voting round ends early once all 3 have voted. | Matches the brief; the early finish keeps the demo fast. |
-| Between-round feedback | After the round-1 vote, everyone sees the tally per player (not who voted for whom). It stays visible during round 2. | Gives round 2 something to discuss without exposing individual votes. |
-| Final result | **Sum of both rounds.** Ties: more round-2 votes, then a seeded random pick (seed = session id, so it is reproducible). `voting.rule: last_round` switches to "round 2 decides". | Both votes count; the rule is one config line. The result screen says "decided by tie-break" neutrally. |
-| Self-vote | Allowed. | Simplest rule; the brief does not forbid it. |
-| Abstain | A participant who does not vote in time adds no vote. If nobody votes, the seeded random pick decides. | The experiment always ends with a result. |
-| AI behaviour | **Scripted, no LLM.** About 10 short lines, random timing (2 to 9 s between messages), weighted-random votes (more active players are slightly more likely, self less likely). | Cheap, deterministic, runs with `docker compose up` and no API key. |
-| Human disconnect | Reconnecting within `disconnect_grace_s` (30 s) restores the same seat and chat. If a human stays away longer, the session is **aborted** and everyone sees a neutral "session ended" screen. In the waiting room, leaving frees the slot. | Simple and predictable. Replacing the person with an AI would be better research design but was cut for time. |
+| Waiting room | Shows only "Waiting for participants (n/3)". AI players "join" after a random delay through the same code path as humans. | A list of slots would show where the AI sit. |
+| Rounds | Two 60 s chat rounds, each followed by a 20 s vote. A vote ends early once all three have voted. | Matches the brief, and the early finish keeps demos short. |
+| Feedback between rounds | After the round 1 vote everyone sees the tally per player, but not who voted for whom. It stays on screen during round 2. | Gives round 2 something to talk about without exposing individual votes. |
+| Final result | Sum of both rounds. A tie goes to whoever got more votes in round 2, then to a seeded random pick (the seed is the session id, so it is reproducible). `voting.rule: last_round` makes round 2 decide alone. | Both votes count, and switching rule is one line of config. The result screen just says "decided by tie-break". |
+| Self-vote | Allowed. | Simplest rule, and the brief does not forbid it. |
+| Abstaining | Someone who doesn't vote in time adds no vote. If nobody votes, the seeded random pick decides. | The experiment always ends with a result. |
+| AI behaviour | Scripted, no LLM. About ten short lines, 2 to 9 s between messages, weighted-random votes (active players get slightly more, itself slightly less). | Cheap, and it runs from `docker compose up` without an API key. |
+| Human disconnect | Reconnecting within `disconnect_grace_s` restores the same seat and chat. Staying away longer aborts the session, and everyone sees a neutral "session ended" screen. In the waiting room, leaving just frees the slot. | Simple and predictable. Replacing the person with an AI would be better research design, but I cut it for time. |
 
 ### Keeping humans and AI indistinguishable
 
-- The server never sends a participant's kind. Clients only see labels ("Player A" to "Player C"), which are shuffled per session so the label never leaks the config order. There are no ids in payloads.
-- AI and human messages and votes go through the same two functions (`submit_message`, `submit_vote`), so the payload, the length limit and the database writes are identical.
-- Every participant is rendered with the same components and styling. Your own messages differ only by alignment and a "(you)" label.
-- `GET /api/health` does not expose the configuration.
-- One automated test checks that no `kind`, `human`, `ai`, token hash or participant id appears in any payload, for all three conditions.
+- The server never sends a participant's kind. Clients see labels ("Player A" to "Player C"), shuffled per session so the label can't leak the order in `config.yml`. No ids appear in payloads.
+- AI and human messages and votes go through the same two functions (`submit_message`, `submit_vote`), so payload, length limit and database writes are identical.
+- Every participant is rendered by the same components with the same styles. Your own messages differ only by alignment and a "(you)" label.
+- `GET /api/health` says nothing about the configuration.
+- One test checks that no `kind`, `human`, `ai`, token hash or participant id shows up in any payload, for all three conditions.
 
 ## Architecture
 
 ```
-browser (React)  <--HTTP / WebSocket-->  nginx  --/api, /ws-->  FastAPI  <-->  PostgreSQL
-                                        (frontend container)    (1 process)
+browser (React)  <-- HTTP / WebSocket -->  nginx  --/api, /ws-->  FastAPI  <-->  PostgreSQL
+                                         (frontend container)     (1 process)
 ```
 
-Three services in `docker-compose.yml`: `db` (Postgres), `backend` (FastAPI), `frontend` (nginx serving the React build and proxying `/api` and `/ws`).
+`docker-compose.yml` runs three services: `db` (Postgres), `backend` (FastAPI) and `frontend` (nginx, which serves the React build and proxies `/api` and `/ws`).
 
 | Decision | Why | Trade-off |
 |---|---|---|
-| WebSocket for real time | True push for chat and timers. | A connection manager to write, versus simpler polling. |
-| Server-authoritative phases and timers | The server owns the phase machine; clients only render `phase` and `ends_at` (corrected for clock skew). | More server code, but no client can drift or cheat. |
-| Push the full state after every change | The first message on connect is the same as any update, so reload and reconnect need no special code. | A few KB per update; fine for 3 participants. |
-| In-memory live state, persisted to Postgres | Fast and simple. Every message, vote and status change is also stored. | One backend process (`--workers 1`), and a restart loses a running session. |
+| WebSocket for real time | Chat and timers are pushed, not polled. | Needs a connection manager, where polling would be simpler. |
+| Server owns phases and timers | Clients only render `phase` and `ends_at` (corrected for clock skew). | More server code, but no client can drift or cheat. |
+| Full state pushed after every change | The first message on connect looks like any other update, so reload and reconnect need no special code. | A few KB per update, which is fine for three people. |
+| Live state in memory, saved to Postgres | Fast and simple. Every message, vote and status change is also stored. | One backend process (`--workers 1`), and a restart loses a running session. |
 | One live session at a time | No lobby or matchmaking to build. | No concurrent groups. A finished or aborted session is replaced by the next arrival. |
-| `config.yml` mounted read-only | Switch conditions by editing one file. | Needs a backend restart (no hot reload). |
-| SQLAlchemy 2.0 (async) + `create_all` on startup | Widely known, explicit constraints. No migration tooling to explain. | No Alembic. A schema change needs a manual migration or a volume reset. |
+| `config.yml` mounted read-only | Change the condition by editing one file. | Needs a backend restart, no hot reload. |
+| SQLAlchemy 2.0 (async) with `create_all` on startup | Well known, constraints are explicit, no migration tooling to explain. | No Alembic, so a schema change means a manual migration or a volume reset. |
 
 ### UI
 
-Plain CSS with design tokens as CSS variables (`frontend/src/styles.css`): near-black background, off-white text, 10%-white borders, 18px cards, one green accent, pill buttons, mono uppercase labels, small status dots, and Geist Sans / Geist Mono self-hosted through `@fontsource` (no CDN). Four screens (waiting room, chat round with timer, vote, results) plus a neutral notice screen. All participants use the same components and styling. Layout works down to a 375 px phone width.
+Plain CSS with design tokens as variables (`frontend/src/styles.css`): near-black background, off-white text, 10% white borders, 18px cards, one green accent, pill buttons, mono uppercase labels, small status dots. Geist Sans and Geist Mono are self-hosted through `@fontsource`, so there is no CDN call. There are four screens (waiting room, chat round with timer, vote, results) plus a neutral notice screen. It works down to a 375 px phone width.
 
 ### Data model
 
-`sessions`, `participants`, `messages`, `votes`. Rules are enforced by the database, not only by code:
+Four tables: `sessions`, `participants`, `messages`, `votes`. The database enforces the rules, not just the code:
 
 - one vote per participant per round: `UNIQUE (session_id, round, voter_id)`
-- one participant per slot and per label in a session: `UNIQUE (session_id, slot)`, `UNIQUE (session_id, label)`
-- rounds are 1 or 2, slots are 0 to 2, message length is 1 to 500, session status is one of waiting/running/finished/aborted
-- a human participant always has a token: `CHECK (kind = 'ai' OR token_hash IS NOT NULL)`
+- one participant per slot and per label in a session: `UNIQUE (session_id, slot)` and `UNIQUE (session_id, label)`
+- rounds are 1 or 2, slots 0 to 2, message length 1 to 500, status is waiting, running, finished or aborted
+- a human always has a token: `CHECK (kind = 'ai' OR token_hash IS NOT NULL)`
 
-A participant row is created only when that participant joins (humans and AI alike). Simple single-column foreign keys are used; "the voter belongs to this session" is checked in the service layer (`repo.py`), not by the database.
+A participant row is created only when that participant joins, for humans and AI alike. Foreign keys are plain single-column ones. That a voter belongs to the same session is checked in `repo.py`, not by the database.
 
 ## Tests
 
-Three must-have tests, run inside the backend container against a separate database (`experiment_test`), so they never touch the live data:
+There are three must-have tests. They run inside the backend container against a separate database (`experiment_test`), so they never touch live data.
 
 ```bash
 docker compose up -d
 docker compose exec backend pytest -q
 ```
 
-1. `test_voting.py`: `decide()` for both rules, tie-breaks (round 2, then seeded random, reproducible) and all-abstain.
-2. `test_db_constraints.py`: a second vote by the same voter in the same round raises `IntegrityError`.
-3. `test_flow_blind.py`: a full session for all three conditions with the 1-second rounds in `backend/tests/config.test.yml` (real timers), persisted rows checked, and no kind or id in any client payload.
+1. `test_voting.py` covers `decide()` for both rules, the tie-breaks (round 2, then seeded random, reproducible) and the all-abstain case.
+2. `test_db_constraints.py` checks that a second vote from the same voter in the same round raises `IntegrityError`.
+3. `test_flow_blind.py` plays a full session in each of the three conditions with the 1-second rounds from `backend/tests/config.test.yml` (real timers), checks the stored rows, and checks that no kind or id leaks into a client payload.
 
-Not automated: browser behaviour (I checked the screens by hand), disconnect and abort, and reload races. Those were exercised with ad hoc scripts during development.
+Not automated: browser behaviour (I checked the screens by hand), disconnect and abort, and reload races. I exercised those with throwaway scripts while building.
 
 ## Known limitations
 
-- **The lobby counter is simulated for AI.** The "n/3" count does not come from real arrivals for AI slots; AI "joins" are timed events from a random delay window. A careful participant could notice patterns (for example, arrivals faster than a person could navigate, or the same delay range in every run). Jittered delays and the shared join code path reduce this; the blind is not perfect.
-- **Scripted AI text can be spotted** (about 10 lines). An LLM-backed agent would be harder to tell apart but needs an API key and was out of scope.
-- **No consent or debrief screen.** A real study needs informed consent before the experiment and a debrief after it that discloses the AI participants.
-- Single backend process and one live session; schema created on startup (no Alembic); same-session checks in the service layer rather than composite foreign keys.
+- The lobby counter is simulated for AI. The "n/3" count doesn't come from real arrivals for the AI slots, only from timed events in a random delay window. A careful participant could spot patterns, such as arrivals faster than a person could click through, or the same delay range every run. Jittered delays and the shared join path help, but the blind is not perfect.
+- The scripted AI text can be spotted, since it is only about ten lines. An LLM-backed agent would be harder to tell apart, but it needs an API key and I left it out.
+- There is no consent or debrief screen. A real study needs informed consent first and a debrief afterwards that discloses the AI participants.
+- One backend process and one live session. The schema is created on startup (no Alembic), and same-session checks live in the service layer rather than in composite foreign keys.
 - A long human disconnect aborts the session instead of handing the seat to an AI.
-- `DEV_MODE=1` is on by default in `docker-compose.yml` to make demos easy: it enables `POST /api/dev/reset`, which aborts the live session. Set `DEV_MODE=0` to remove the route.
+- `DEV_MODE=1` is on by default in `docker-compose.yml` to make demos easy. It enables `POST /api/dev/reset`, which aborts the live session. Set `DEV_MODE=0` to remove the route.
 
-## What I cut because of the 4-hour limit
+## Cut for the 4-hour limit
 
 LLM-driven AI, AI takeover of a disconnected human, Alembic migrations, concurrent sessions, browser end-to-end tests.
 
 ## AI usage
 
-All prompts and the exact model and tool are in [`ai_logs/prompts.md`](ai_logs/prompts.md). Tool: Claude Code (Claude desktop app). Model: `claude-sonnet-5-5`. Rules for the agent are in [`AGENTS.md`](AGENTS.md).
+I used an AI coding assistant for this project. Every prompt I sent, with the exact tool and model, is in [`ai_logs/prompts.md`](ai_logs/prompts.md). The tool was Claude Code (Claude desktop app) and the model was `claude-sonnet-5-5`. The rules the assistant had to follow are in [`AGENTS.md`](AGENTS.md).
 
 ## Project layout
 
@@ -136,9 +138,9 @@ backend/app/               FastAPI app
   config.py                load and validate config.yml
   models.py, db.py, repo.py   schema, engine, data access
   engine.py                live session: join, phases, timers, broadcast
-  voting.py                pure decide() / tally()
+  voting.py                pure decide() and tally()
   ai.py                    scripted AI participants
-  main.py                  HTTP + WebSocket endpoints
+  main.py                  HTTP and WebSocket endpoints
 backend/tests/             pytest suite
 frontend/src/              React app: useExperiment hook, screens/
 ai_logs/prompts.md         prompts, model and tool log
