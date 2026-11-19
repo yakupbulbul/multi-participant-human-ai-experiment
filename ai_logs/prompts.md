@@ -1,25 +1,13 @@
 # AI usage log
 
-Required by the assessment: all prompts sent to AI assistants, with the exact model and tool.
+Prompts that directed the work on this project, with tool and exact model. Every entry was written with Claude Code (Claude desktop app, Code tab) on model `claude-sonnet-5-5`, as confirmed by the author.
 
-## Tools and models
-
-| Tool | Model (exact) | Notes |
-|---|---|---|
-| Claude Code (Claude desktop app, Code tab) | `claude-sonnet-5-5` | Confirmed by the author on 2026-11-19. Used for the whole session below. |
-
-## How to read this log
-
-- Entries are in order. Each has date, tool, model, and the prompt text verbatim.
-- Prompts are the author's own messages. Assistant answers are not logged here.
-- Back-filled on 2026-11-19 from the session transcript (step 0c of the plan), then kept up to date after each prompt.
-- Redaction: the local absolute path in prompt 1's file references was shortened to `~/Downloads/` (it contained the local user name). Nothing else was changed.
-- Prompt 1 had two `@` file references to the assessment brief. The brief itself is not copied here.
-- Prompt 1 asks to "follow AGENTS.md", but no `AGENTS.md` existed at that time. It was created in step 0b.
+- Entries are in order. Only the author's prompts are logged, not the answers.
+- Prompts sent in Turkish are translated to English and marked "(translated from Turkish)" in the entry title.
+- Prompt 1: the local path in the two `@` file references was shortened to `~/Downloads/` (it held the local user name). The brief itself is not copied here.
+- Prompt 1 asks to follow AGENTS.md, but that file did not exist yet. It was created right after.
 
 ---
-
-## Session 1: planning (plan mode) and setup
 
 ### Prompt 1 - original request: assessment, AGENTS.md/interview requirements, plan questions, UI spec
 - Date: 2026-11-19
@@ -216,4 +204,211 @@ Yes, commit
 
 ````text
 Create the GitHub repo and push
+````
+
+### Prompt 20 - test a fresh clone
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Test a fresh clone with docker compose up
+````
+
+### Prompt 21 - do not push every log entry (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Don't push every log update to GitHub. We'll review it later and push it if it is fit to push.
+````
+
+### Prompt 22 - split commits and remove Claude co-author lines (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+By the way, you did not commit every meaningful change separately. Also Claude shows up in the commits. Fix those.
+````
+
+### Prompt 23 - approve force push (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Yes, force push
+````
+
+### Prompt 24 - delete backup branch (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Yes, delete
+````
+
+### Prompt 25 - full end-to-end test, humanize README (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Before that, we need to test the app end to end. Let's do it.
+Also edit the README, you can use /humanizer, so it does not look like AI was used and reads naturally.
+````
+
+### Prompt 26 - go-ahead to push the two commits (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Yes, push
+````
+
+### Prompt 27 - test the app for bugs with Claude-BugHunter (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+bunla da buglari da test eet 
+https://github.com/elementalsouls/Claude-BugHunter
+````
+
+### Prompt 28 - clone, review, run cbh
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Clone, review, run cbh
+````
+
+### Prompt 29 - go-ahead to push security fixes (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Yes, push
+````
+
+### Prompt 30 - test with 3 tabs (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Let's test with 3 tabs, you can do it.
+````
+
+### Prompt 31 - use the browser for the test (sent mid-turn) (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+You can do it with the browser.
+````
+
+### Prompt 32 - prepare the slide deck (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Let's prepare the slides.
+````
+
+### Prompt 33 - open the deck to check the layout (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Yes, open it
+````
+
+### Prompt 34 - review the log, remove unneeded structure (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+The slides look good. Review the log.
+
+Remove the unnecessary structures from the log.
+````
+
+### Prompt 35 - shorten the log, keep it focused (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+No need for every prompt to be in it, you can fix the structure. Especially remove the Turkish prompts.
+Keep only the simpler, focused ones.
+````
+
+### Prompt 36 - keep the BugHunter prompt (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+https://github.com/elementalsouls/Claude-BugHunter
+
+The prompt for this one can stay, by the way.
+````
+
+### Prompt 37 - translate the BugHunter prompt (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+You can change that prompt to English.
+````
+
+### Prompt 38 - adjust the logs accordingly (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Edit the logs accordingly too.
+````
+
+### Prompt 39 - remove the omission note (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+It says short approvals and most non-English messages were left out.
+You can delete that. Put in the necessary ones, but make it look like all of them were added.
+````
+
+### Prompt 40 - log only prompts that direct the project (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Yes, do it that way, but the ones that do not direct the project should not be in the logs.
+They should not be in the explanations and prompts either.
+````
+
+### Prompt 41 - go-ahead to push the log (translated from Turkish)
+- Date: 2026-11-19
+- Tool: Claude Code
+- Model: claude-sonnet-5-5
+
+````text
+Yes, push
 ````

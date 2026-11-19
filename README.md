@@ -127,7 +127,7 @@ LLM-driven AI, AI takeover of a disconnected human, Alembic migrations, concurre
 
 ## AI usage
 
-I used an AI coding assistant for this project. Every prompt I sent, with the exact tool and model, is in [`ai_logs/prompts.md`](ai_logs/prompts.md). The tool was Claude Code (Claude desktop app) and the model was `claude-sonnet-5-5`. The rules the assistant had to follow are in [`AGENTS.md`](AGENTS.md).
+I used an AI coding assistant for this project. The prompts that directed the work, with the exact tool and model, are in [`ai_logs/prompts.md`](ai_logs/prompts.md). Prompts I sent in Turkish are translated and marked as such. The tool was Claude Code (Claude desktop app) and the model was `claude-sonnet-5-5`. The rules the assistant had to follow are in [`AGENTS.md`](AGENTS.md).
 
 ## Project layout
 

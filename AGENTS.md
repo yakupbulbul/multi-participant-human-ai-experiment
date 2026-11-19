@@ -41,9 +41,9 @@ Three must-have tests: (1) `decide()` rules and tie-break, (2) duplicate vote ra
 
 ## AI usage log (required by the assessment)
 
-The repository must contain **all prompts** sent to AI assistants, with the **exact model and tool** used. This is kept in `ai_logs/prompts.md`.
+The repository must contain every prompt that directs the project, sent to AI assistants, with the **exact model and tool** used. This is kept in `ai_logs/prompts.md`.
 
-- After every user prompt in an AI session, append an entry: date, tool, exact model name, prompt text verbatim.
+- After every prompt that directs the work (including short approvals like "Yes, start step 3"), append an entry: date, tool, exact model name, prompt text verbatim. Side questions that do not direct the project are not logged. If a prompt was sent in another language, log an English translation and mark it "(translated from Turkish)" in the entry title.
 - If the model or tool changes, say so in the entry header.
 - Agents: remind the user at the end of each work block to update the log if you cannot append to it yourself.
 
